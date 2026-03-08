@@ -1,0 +1,67 @@
+# fastapi==0.115.0
+# uvicorn[standard]==0.30.0
+# python-multipart==0.0.12
+# pydantic==2.9.0
+
+# # LangChain core
+# langchain==0.3.7
+# langchain-core==0.3.15
+# langchain-community==0.3.7
+# langchain-openai==0.2.6
+# langchain-anthropic==0.2.4
+# langsmith==0.1.140
+
+# # Vector stores
+# pinecone-client==3.2.2
+# langchain-pinecone==0.2.0
+
+# # Document parsing
+# pdfplumber==0.11.0          # PDF text + table extraction
+# pypdf==4.3.1                # fallback PDF reader
+# pdf2image==1.17.0           # render scanned PDF pages for OCR
+# python-docx==1.1.2          # DOCX text + tables + embedded images
+# Pillow==10.4.0
+# lxml==5.3.0
+
+# # OCR  (requires: sudo apt-get install tesseract-ocr poppler-utils)
+# pytesseract==0.3.13
+
+# # Tools & utilities
+# duckduckgo-search==6.3.0
+# numpy==1.26.4
+# aiofiles==24.1.0
+# python-dotenv==1.0.1
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.12
+pydantic==2.9.0
+
+# LangChain core
+langchain>=0.3.14
+langchain-core>=0.3.15
+langchain-community>=0.3.14
+langchain-openai>=0.2.6
+langchain-anthropic>=0.2.4
+langsmith>=0.1.140,<0.2.0
+
+# Vector stores
+pinecone>=5.0.0
+langchain-pinecone>=0.2.3
+
+# Document parsing
+pdfplumber==0.11.0          # PDF text + table extraction
+pypdf==4.3.1                # fallback PDF reader
+pdf2image==1.17.0           # render scanned PDF pages for OCR
+python-docx==1.1.2          # DOCX text + tables + embedded images
+Pillow==10.4.0
+lxml==5.3.0
+
+# OCR  (requires: sudo apt-get install tesseract-ocr poppler-utils)
+pytesseract==0.3.13
+
+# Tools & utilities
+duckduckgo-search==6.3.0
+numpy>=2.0.0
+aiofiles==24.1.0
+python-dotenv==1.0.1
