@@ -1,4 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
+from typing import Optional
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 class Settings(BaseSettings):
 
@@ -44,12 +48,12 @@ class Settings(BaseSettings):
     VECTOR_DB_DISTANCE_METHOD: str = None
     
     model_config = SettingsConfigDict(
-        env_file=".env",
-        extra="ignore",          # تجاهل أي متغيرات إضافية لا نحتاجها
-        case_sensitive=False     # لا تهتم إذا كان المتغير كبيراً أو صغيراً
+        env_file=str(ROOT_DIR / ".env"),  
+        extra="ignore",
+        case_sensitive=False
     )
-    # class Config:
-    #     env_file = ".env"
+   
 
 def get_settings():
     return Settings()
+
