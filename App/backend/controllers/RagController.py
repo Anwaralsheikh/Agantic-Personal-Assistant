@@ -8,7 +8,7 @@ class RagController(BaseController):
     
     def __init__(self, vectordb_client, generation_client, embedding_client):
         super().__init__()
-        # هدول بجوا من الـ Factory في الـ Main
+
         self.vectordb_client = vectordb_client
         self.generation_client = generation_client
         self.embedding_client = embedding_client
@@ -17,13 +17,11 @@ class RagController(BaseController):
     def get_collection_name(self, project_id: str):
         return f"collection_{project_id}".strip()
 
-    # --- المرحلة الأولى: الفهرسة والتخزين (Indexing) ---
+    # --- (Indexing) ---
     
     def index_project_file(self, project_id: str, file_id: str, chunk_size: int = 500, overlap_size: int = 50):
-        """
-        هذه الميثود تربط ProcessController مع VectorDB
-        """
-        # 1. استخراج النصوص (Chunks) باستخدام الـ ProcessController
+        
+        
         processor = ProcessController(project_id=project_id)
         file_content = processor.get_file_content(file_id=file_id)
         
@@ -38,18 +36,18 @@ class RagController(BaseController):
             overlap_size=overlap_size
         )
 
-        # 2. تحويل النصوص إلى Vectors
+    
         texts = [c.page_content for c in chunks]
         metadata = [c.metadata for c in chunks]
         vectors = [self.embedding_client.embed_text(text) for text in texts]
 
-        # 3. إنشاء الكولكشن وتخزين البيانات
+    
         collection_name = self.get_collection_name(project_id)
         
         self.vectordb_client.create_collection(
             collection_name=collection_name,
             embedding_size=len(vectors[0]),
-            do_reset=False # نضعها False عشان نقدر نضيف ملفات تانية لنفس المشروع
+            do_reset=False 
         )
 
         return self.vectordb_client.insert_many(
@@ -59,31 +57,26 @@ class RagController(BaseController):
             vectors=vectors
         )
 
-    # --- المرحلة الثانية: المحادثة الذكية (Agentic Chat) ---
+    
 
     def get_agent_response(self, project_id: str, user_question: str):
-        """
-        هذه الميثود تنشئ الأجينت وترد على السؤال
-        """
-        collection_name = self.get_collection_name(project_id)
         
-        # 1. الحصول على الـ Retriever من الـ VectorDB
-        # بنستخدم الـ Bridge اللي عملناه في البروفايدرز لربطهم مع LangChain
+        collection_name = self.get_collection_name(project_id)
         embeddings_model = self.embedding_client.get_langchain_embeddings()
         retriever = self.vectordb_client.get_langchain_retriever(
             collection_name=collection_name,
             embeddings_model=embeddings_model
         )
 
-        # 2. تحويل الـ Retriever لأداة (Tool) للأجينت
         search_tool = create_retriever_tool(
             retriever,
             "project_search_tool",
-            "استخدم هذه الأداة للبحث في مستندات المشروع للإجابة على أسئلة المستخدم."
+            
+            """Search and retrieve relevant information from the project documents.
+            Use this tool whenever the user asks any question about the document content.
+            Always use this tool FIRST before answering any question."""
         )
 
-        # 3. بناء الأجينت (من مجلد agents)
-        # بنعطيه موديل التوليد (Gemini/OpenAI) والأداة
         agent_logic = RagAgent(
             llm_model=self.generation_client.get_langchain_model(),
             tools=[search_tool]
@@ -91,7 +84,6 @@ class RagController(BaseController):
         
         executor = agent_logic.get_executor()
 
-        # 4. التنفيذ والرد
         response = executor.invoke({
             "input": user_question,
             "chat_history": [] 
