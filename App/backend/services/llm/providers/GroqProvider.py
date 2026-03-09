@@ -29,7 +29,7 @@ class GroqProvider(LLMInterface):
         self.generation_model_id = model_id
 
     def set_embedding_model(self, model_id: str, embedding_size: int):
-        # ⚠️ Groq لا يدعم Embedding، نستخدم Cohere أو Gemini للـ Embedding
+    
         self.embedding_model_id = model_id
         self.embedding_size = embedding_size
         self.logger.warning("Groq does not support embeddings. Use Cohere or Gemini for embeddings.")
@@ -65,7 +65,7 @@ class GroqProvider(LLMInterface):
         return response.choices[0].message.content
 
     def embed_text(self, text: str, document_type: str=None):
-        # Groq لا يدعم Embedding
+        
         self.logger.error("Groq does not support embed_text. Use Cohere or Gemini instead.")
         return None
 
@@ -84,6 +84,6 @@ class GroqProvider(LLMInterface):
         )
 
     def get_langchain_embeddings(self) -> Embeddings:
-        # Groq لا يدعم Embeddings
+        
         self.logger.error("Groq does not support embeddings.")
         return None

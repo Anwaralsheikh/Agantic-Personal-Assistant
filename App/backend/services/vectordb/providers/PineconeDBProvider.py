@@ -88,9 +88,9 @@ class PineconeDBProvider(VectorDBInterface):
         records = []
         
         for i in range(len(texts)):
-            # تجهيز البيانات بصيغة Pinecone (id, values, metadata)
+            
             records.append({
-                "id": f"vec_{i}", # أو استخدم UUID
+                "id": f"vec_{i}", 
                 "values": vectors[i],
                 "metadata": {
                     "text": texts[i], 
@@ -99,7 +99,7 @@ class PineconeDBProvider(VectorDBInterface):
             })
             
         try:
-            # Pinecone يستخدم upsert وليس upload_records
+            
             index.upsert(vectors=records)
             return True
         except Exception as e:

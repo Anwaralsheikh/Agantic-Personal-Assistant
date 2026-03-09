@@ -8,7 +8,7 @@ class VectorDBProviderFactory:
         self.base_controller = BaseController()
 
     def create(self, provider: str):
-        # 1. Qdrant
+        
         if provider == VectorDBEnums.QDRANT.value:
             db_path = self.base_controller.get_database_path(db_name=self.config.VECTOR_DB_PATH)
             return QdrantDBProvider(
@@ -16,19 +16,19 @@ class VectorDBProviderFactory:
                 distance_method=self.config.VECTOR_DB_DISTANCE_METHOD,
             )
             
-        # 2. ChromaDB
+        
         if provider == VectorDBEnums.CHROMA.value:
-            # يفضل استخدام get_database_path أيضاً لضمان إنشاء المجلد محلياً
+            
             db_path = self.base_controller.get_database_path(db_name=self.config.VECTOR_DB_PATH)
             return ChromaDBProvider(
                 db_path=db_path,
                 distance_method=self.config.VECTOR_DB_DISTANCE_METHOD
             )
         
-        # 3. Pinecone (تعديل المستدعى هنا)
+        
         elif provider == VectorDBEnums.PINECONE.value:
             return PineconeDBProvider(
-                api_key=self.config.PINECONE_API_KEY, # تأكد من وجوده في السيتينغ
+                api_key=self.config.PINECONE_API_KEY, 
                 distance_method=self.config.VECTOR_DB_DISTANCE_METHOD
             )
             

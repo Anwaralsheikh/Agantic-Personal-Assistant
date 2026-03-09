@@ -137,21 +137,15 @@ class QdrantDBProvider(VectorDBInterface):
             limit=limit
         )
     def get_langchain_retriever(self, collection_name: str, embeddings_model, search_kwargs: dict = None) -> VectorStoreRetriever:
-        """
-        يحول Qdrant Client إلى LangChain Retriever.
-        ملاحظة: نحتاج لـ embeddings_model (من الـ LLM Provider) 
-        لأن الـ Retriever يجب أن يعرف كيف يحول النص إلى Vector.
-        """
-        
-        # 1. إنشاء كائن الـ VectorStore الخاص بـ LangChain
+    
+    
         vector_store = QdrantVectorStore(
             client=self.client,
             collection_name=collection_name,
             embedding=embeddings_model,
         )
 
-        # 2. تحويله إلى Retriever
-        # search_kwargs ممكن تحتوي على {'k': 5} لتحديد عدد النتائج
+        
         return vector_store.as_retriever(
             search_kwargs=search_kwargs or {"k": 5}
         )

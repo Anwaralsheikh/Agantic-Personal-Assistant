@@ -12,8 +12,7 @@ class ChromaDBProvider(VectorDBInterface):
         self.db_path = db_path
         self.client = None
         
-        # Chroma يستخدم مسميات مختلفة للمسافات
-        # 'l2' للهندسي، 'cosine' للتشابه، 'ip' للضرب النقطي
+        
         if distance_method == DistanceMethodEnums.COSINE.value:
             self.distance_metric = "cosine"
         elif distance_method == DistanceMethodEnums.DOT.value:
@@ -24,14 +23,14 @@ class ChromaDBProvider(VectorDBInterface):
         self.logger = logging.getLogger(__name__)
 
     def connect(self):
-        # PersistentClient يضمن حفظ البيانات في المجلد المحدد
+    
         self.client = chromadb.PersistentClient(path=self.db_path)
 
     def disconnect(self):
         self.client = None
 
     def is_collection_existed(self, collection_name: str) -> bool:
-        # Chroma يعطي خطأ إذا طلبت كولكشن غير موجود، لذا نتحقق من القائمة
+    
         collections = self.client.list_collections()
         return any(c.name == collection_name for c in collections)
     
@@ -49,7 +48,7 @@ class ChromaDBProvider(VectorDBInterface):
         if do_reset:
             self.delete_collection(collection_name)
         
-        # Chroma لا يتطلب embedding_size صراحة عند الإنشاء، بل يحدده عند أول إضافة
+        
         self.client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": self.distance_metric}
@@ -78,7 +77,7 @@ class ChromaDBProvider(VectorDBInterface):
     def insert_many(self, collection_name: str, texts: list, vectors: list, metadata: list = None):
         collection = self.client.get_collection(name=collection_name)
         
-        # Chroma يتوقع قائمة من الـ IDs
+
         ids = [f"id_{i}" for i in range(len(texts))]
         
         try:
@@ -101,7 +100,7 @@ class ChromaDBProvider(VectorDBInterface):
         )
 
     def get_langchain_retriever(self, collection_name: str, embeddings_model, search_kwargs: dict = None) -> VectorStoreRetriever:
-        # الجسر مع LangChain باستخدام مكتبة langchain-chroma
+        
         vector_store = Chroma(
             client=self.client,
             collection_name=collection_name,

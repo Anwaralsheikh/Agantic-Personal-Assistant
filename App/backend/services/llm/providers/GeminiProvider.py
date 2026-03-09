@@ -1,6 +1,6 @@
 from ..LLMInterface import LLMInterface
 from ..LLMEnums import GeminiEnums, DocumentTypeEnum
-from google import genai  # ✅ المكتبة الجديدة
+from google import genai  
 from google.genai import types
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.embeddings import Embeddings
@@ -23,7 +23,7 @@ class GeminiProvider(LLMInterface):
         self.embedding_model_id = None
         self.embedding_size = None
 
-        # ✅ الطريقة الجديدة لإعداد العميل
+        
         self.client = genai.Client(api_key=self.api_key)
 
         self.logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class GeminiProvider(LLMInterface):
         max_output_tokens = max_output_tokens or self.default_generation_max_output_tokens
         temperature = temperature or self.default_generation_temperature
 
-        # ✅ الطريقة الجديدة
+        
         response = self.client.models.generate_content(
             model=self.generation_model_id,
             contents=self.process_text(prompt),
@@ -69,7 +69,7 @@ class GeminiProvider(LLMInterface):
             self.logger.error("Embedding model for Gemini was not set")
             return None
 
-        # ✅ الطريقة الجديدة
+
         response = self.client.models.embed_content(
             model=self.embedding_model_id,
             contents=self.process_text(text),
