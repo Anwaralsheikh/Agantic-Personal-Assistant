@@ -1,8 +1,6 @@
 # import sys
 # import pydantic
 # from pydantic import v1 as pydantic_v1
-
-# # خدعة لإصلاح نقص pydantic_v1 في الإصدارات الجديدة
 # import langchain_core
 # if not hasattr(langchain_core, "pydantic_v1"):
 #     langchain_core.pydantic_v1 = pydantic_v1
@@ -19,17 +17,17 @@
 #         self.tools = tools
 
 #     def get_executor(self):
-#         # سحب قالب ReAct الشهير
+#     
 #         prompt = langchainhub("hwchase17/react")
 
-#         # بناء الأجينت
+#        
 #         agent = create_react_agent(
 #             llm=self.llm, 
 #             tools=self.tools, 
 #             prompt=prompt
 #         )
         
-#         # إرجاع محرك التنفيذ
+#         
 #         return AgentExecutor(
 #             agent=agent, 
 #             tools=self.tools, 
@@ -47,7 +45,6 @@ if not hasattr(langchain_core, "pydantic_v1"):
     sys.modules["langchain_core.pydantic_v1"] = pydantic_v1
 
 from langchain_classic.agents import create_react_agent, AgentExecutor
-# from langchainhub import Client  # ✅ هذا يشتغل بعد تثبيت langchainhub
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
 
