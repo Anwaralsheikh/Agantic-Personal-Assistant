@@ -9,3 +9,4 @@ class ProcessRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str
+    agent_type: Optional[str] = "tool_calling"  # "react" أو "tool_calling"

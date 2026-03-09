@@ -110,7 +110,7 @@ async def index_endpoint(project_id: str, process_request: ProcessRequest,
 
     rag_ctrl = RagController(
         vectordb_client=vdb_provider,
-        generation_client=None,  # مش محتاجه للـ indexing
+        generation_client=None,  
         embedding_client=embed_provider
     )
 
@@ -158,7 +158,8 @@ async def chat_endpoint(project_id: str, chat_request: ChatRequest,
     try:
         answer = rag_ctrl.get_agent_response(
             project_id=project_id,
-            user_question=chat_request.question
+            user_question=chat_request.question,
+            agent_type=chat_request.agent_type
         )
         return JSONResponse(content={
             "signal": ResponseSignal.CHAT_SUCCESS.value,
