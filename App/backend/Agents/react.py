@@ -48,25 +48,32 @@ from langchain_classic.agents import create_react_agent, AgentExecutor
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
 
-REACT_TEMPLATE = """Answer the following questions as best you can. You have access to the following tools:
+REACT_TEMPLATE = """You are a helpful assistant. Answer questions using ONLY the provided tools.
 
+You have access to the following tools:
 {tools}
 
-Use the following format:
+STRICT Rules:
+- Use ONLY this format, no exceptions:
 
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: [your reasoning]
+Action: [tool name from: {tool_names}]
+Action Input: [input to the tool]
+Observation: [tool result]
+... (repeat Thought/Action/Action Input/Observation if needed)
 Thought: I now know the final answer
-Final Answer: the final answer to the original input question
+Final Answer: [your answer here]
+
+- After receiving an Observation, if you have enough info → write "Final Answer:" IMMEDIATELY
+- NEVER write "Action: None"
+- NEVER repeat the question
+- ALWAYS end with "Final Answer:"
 
 Begin!
 
 Question: {input}
-Thought:{agent_scratchpad}"""
+Thought: I should search the documents first.
+{agent_scratchpad}"""
 
 class RagAgent:
     def __init__(self, llm_model, tools: list):
