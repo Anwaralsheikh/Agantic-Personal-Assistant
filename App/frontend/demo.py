@@ -13,7 +13,8 @@ with st.sidebar:
     st.divider()
 
     st.header("Upload File")
-    uploaded_file = st.file_uploader("Choose a file", type=["pdf", "txt"])
+    st.caption("Supported: PDF, TXT, CSV, Excel")
+    uploaded_file = st.file_uploader("Choose a file", type=["pdf", "txt", "csv", "xlsx", "xls"])
 
     if uploaded_file and st.button("Upload & Index", type="primary"):
         # 1. Upload
