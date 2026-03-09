@@ -21,7 +21,6 @@ class RagController(BaseController):
     
     def index_project_file(self, project_id: str, file_id: str, chunk_size: int = 500, overlap_size: int = 50):
         
-        
         processor = ProcessController(project_id=project_id)
         file_content = processor.get_file_content(file_id=file_id)
         
@@ -59,7 +58,7 @@ class RagController(BaseController):
 
     
 
-    def get_agent_response(self, project_id: str, user_question: str):
+    def get_agent_response(self, project_id: str, user_question: str, agent_type: str = "tool_calling" ):
         
         collection_name = self.get_collection_name(project_id)
         embeddings_model = self.embedding_client.get_langchain_embeddings()
@@ -68,6 +67,7 @@ class RagController(BaseController):
             embeddings_model=embeddings_model
         )
 
+    
         search_tool = create_retriever_tool(
             retriever,
             "project_search_tool",
@@ -77,16 +77,37 @@ class RagController(BaseController):
             Always use this tool FIRST before answering any question."""
         )
 
-        agent_logic = RagAgent(
-            llm_model=self.generation_client.get_langchain_model(),
-            tools=[search_tool]
-        )
+        from controllers.ProjectController import ProjectController
+        project_path = ProjectController().get_project_path(project_id=project_id)
+
+        if agent_type == "react":
+            agent_logic = RagAgent(
+                llm_model=self.generation_client.get_langchain_model(),
+                tools=[search_tool]
+            )
+        else:
+            from Agents.AganticRag import ToolCallingAgent
+            agent_logic = ToolCallingAgent(
+                llm_model=self.generation_client.get_langchain_model(),
+                tools=[search_tool],
+                files_path=project_path  
+            )
         
         executor = agent_logic.get_executor()
 
-        response = executor.invoke({
-            "input": user_question,
-            "chat_history": [] 
-        })
+        if agent_type == "react":
+            response = executor.invoke({
+                "input": user_question,
+                "chat_history": []
+            })
+        else:
+            response = executor.invoke({
+                "input": user_question,
+            })
+
+        # response = executor.invoke({
+        #     "input": user_question,
+        #     "chat_history": [] 
+        # })
 
         return response["output"]
