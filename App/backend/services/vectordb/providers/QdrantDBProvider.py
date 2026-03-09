@@ -143,6 +143,8 @@ class QdrantDBProvider(VectorDBInterface):
             client=self.client,
             collection_name=collection_name,
             embedding=embeddings_model,
+            content_payload_key="text",
+            metadata_payload_key="metadata"
         )
 
         
